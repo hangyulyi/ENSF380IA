@@ -7,7 +7,6 @@ public class MedicalRecordTest {
    Location expectedLocation = new Location("Shelter", "Real address");
    private String expectedTreatmentDetails = "Broken arm";
    private String expectedDateOfTreatment = "2024-01-19";
-   private String validDate = "2024-02-04";
    private String invalidDate = "2024/12/23";
    MedicalRecord medicalRecord = new MedicalRecord(expectedLocation, expectedTreatmentDetails, expectedDateOfTreatment);
 
