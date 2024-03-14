@@ -1,6 +1,6 @@
 /**
  * @author  Hangyul Yi
- * @version 1.1
+ * @version 1.2
  * @since   1.0
  */
 
@@ -75,5 +75,27 @@ public class Location {
     */
    public void removeSupply(Supply supply) {
       supplies.remove(supply);
+   }
+
+   /**
+    * This method is used to update Location
+    * @param name
+    * @param address
+    */
+   public void updateLocation(String name, String address) {
+      this.name = name;
+      this.address = address;
+   }
+
+   /**
+    * Update Supply if given to occupant from the supplies list
+    * @param occupant
+    * @param supply
+    */
+   public void allocateSupply(DisasterVictim occupant, Supply supply) {
+      if (occupants.contains(occupant) && supplies.contains(supply)) {
+         occupant.addSupply(supply);
+         removeSupply(supply);
+      }
    }
 }
