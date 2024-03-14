@@ -1,6 +1,6 @@
 /**
  * @author  Hangyul Yi
- * @version 1.1
+ * @version 1.2
  * @since   1.0
  */
 
@@ -40,4 +40,5 @@ public class FamilyRelation {
    public DisasterVictim getPersonOne() { return this.personOne; }
    public String getRelationshipTo() { return this.relationshipTo; }
    public DisasterVictim getPersonTwo() { return this.personTwo; }
+
 }
