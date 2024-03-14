@@ -1,6 +1,6 @@
 /**
  * @author  Hangyul Yi
- * @version 1.2
+ * @version 1.3
  * @since   1.0
  */
 
@@ -138,6 +138,9 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
    public String getEntryDate() { return this.ENTRY_DATE; }
    public int getAssignedSocialID() { return this.ASSIGNED_SOCIAL_ID; }
    public String getGender() { return gender; }
+   public List<String> getGenderOptions() {
+      return genderOptions;
+   }
    public List<Supply> getPersonalBelongings() { return personalBelongings; }
 
    public DietaryRestrictions getDietaryRestrictions() { 

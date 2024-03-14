@@ -52,4 +52,62 @@ public class DisasterVictimTest {
       victimAge.setGender(expectedGender);
       assertEquals("getGender should return correct gender", expectedGender, victimAge.getGender());
    }
+
+   @Test
+   public void testSetDietaryRestriction() {
+      victimAge.setDietaryRestriction(DisasterVictim.DietaryRestrictions.GFML);
+      assertEquals(DisasterVictim.DietaryRestrictions.GFML, victimAge.getDietaryRestrictions());
+   }
+
+   @Test
+   public void testLoadGenderOptions() {
+      victimAge.loadGenderOptions("GenderOptions.txt");
+      assertNotNull(victimAge.getGenderOptions());
+      assertFalse(victimAge.getGenderOptions().isEmpty());
+   }
+
+   @Test
+   public void testAddSupply() {
+      Supply supply = new Supply("Food", 10);
+      victimAge.addSupply(supply);
+      assertTrue(victimAge.getPersonalBelongings().contains(supply));
+   }
+
+   @Test
+   public void testRemoveSupply() {
+      Supply supply = new Supply("Water", 20);
+      victimAge.addSupply(supply);
+      assertTrue(victimAge.getPersonalBelongings().contains(supply));
+      victimAge.removeSupply(supply);
+      assertFalse(victimAge.getPersonalBelongings().contains(supply));
+   }
+
+   @Test
+   public void testAddFamilyConnection() {
+      DisasterVictim relative = new DisasterVictim("Billy", "2024-12-23", 30);
+      victimAge.addFamilyConnection(relative, "Sibling");
+      assertTrue(victimAge.getFamilyConnections().stream().anyMatch(r -> r.getPersonTwo().equals(relative)));
+   }
+
+   @Test
+   public void testRemoveFamilyConnection() {
+      DisasterVictim relative = new DisasterVictim("Billy", "2024-12-23", 30);
+      FamilyRelation familyRelation = new FamilyRelation(victimAge, "Sibling", relative);
+      victimAge.addFamilyConnection(relative, "Sibling");
+      assertTrue(victimAge.getFamilyConnections().stream().anyMatch(r -> r.getPersonTwo().equals(relative)));
+
+      victimAge.removeFamilyConnection(familyRelation);
+      assertFalse(victimAge.getFamilyConnections().stream().anyMatch(r -> r.getPersonTwo().equals(relative)));
+   }
+
+   @Test
+   public void testSetGenderValid() {
+      victimAge.setGender("boy");
+      assertEquals("boy", victimAge.getGender());
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testSetGenderInvalid() {
+      victimAge.setGender("horse");
+   }
 }
