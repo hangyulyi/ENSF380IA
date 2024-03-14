@@ -16,6 +16,11 @@ public class Entity {
       this.firstName = firstName;
    }
 
+   public Entity(String firstName, String lastName) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+   }
+
    /* Setters */
    public void setFirstName(String firstName) {
       this.firstName = firstName;
