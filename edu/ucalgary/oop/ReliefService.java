@@ -81,7 +81,7 @@ public class ReliefService {
    public String inquirerLog() {
       StringBuilder log = new StringBuilder();
       log.append("Inquirer: ").append(inquirer.getFirstName()).append(" ").append(inquirer.getLastName()).append("\n");
-      log.append("Missing person: ").append(missingPerson.getFirstName()).append(" ").append("\n");
+      log.append("Missing person: ").append(missingPerson.getFirstName()).append("\n");
       log.append("Date of Inquiry: ").append(dateOfInquiry).append("\n");
       log.append("Information: ").append(infoProvided).append("\n");
       log.append("Last known location: ").append(lastKnownLocation.getName()).append("\n");
