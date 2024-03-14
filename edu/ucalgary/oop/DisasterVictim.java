@@ -57,6 +57,8 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
       this.familyConnections = new HashMap<>();
       this.ASSIGNED_SOCIAL_ID = counter;
       counter++;
+
+      loadGenderOptions("GenderOptions.txt");
    }
 
    /**
@@ -78,6 +80,8 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
       this.familyConnections = new HashMap<>();
       this.ASSIGNED_SOCIAL_ID = counter;
       counter++;
+
+      loadGenderOptions("GenderOptions.txt");
    }
 
    /* Setters */
@@ -114,7 +118,7 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
    public void setGender(String gender) throws IllegalArgumentException {
       boolean isValid = false;
       for (String option : genderOptions) {
-         if (option.equalsIgnoreCase(gender)) {
+         if (option.equalsIgnoreCase(gender.trim())) {
             isValid = true;
             break;
          }
@@ -213,6 +217,7 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
          String line;
          while ((line = reader.readLine()) != null) {
             genderOptions.add(line.trim());
+            System.out.println("Added: " + line.trim());
          }
          
       } catch (IOException e) {

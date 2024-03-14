@@ -19,6 +19,7 @@ public class DisasterVictimTest {
    @Before
    public void setUp() {
       victimAge = new DisasterVictim("John", "2024-03-13", 30);
+      victimAge.loadGenderOptions("GenderOptions.txt");
       victimBirth = new DisasterVictim("Jane", "2024-03-13", "1999-01-19");
 
       suppliesToSet = new ArrayList<>();
@@ -45,4 +46,10 @@ public class DisasterVictimTest {
    }
 
 
+   @Test
+   public void testSetAndGetGender() {
+      String expectedGender = "girl";
+      victimAge.setGender(expectedGender);
+      assertEquals("getGender should return correct gender", expectedGender, victimAge.getGender());
+   }
 }
