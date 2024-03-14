@@ -1,6 +1,6 @@
 /**
  * @author  Hangyul Yi
- * @version 1.1
+ * @version 1.2
  * @since   1.0
  */
 
@@ -72,5 +72,19 @@ public class ReliefService {
 
    public void setLastKnownLocation(Location lastKnowLocation) {
       this.lastKnownLocation = lastKnowLocation;
+   }
+
+   /**
+    * This method generates a log entry for the inquiry
+    * @return log
+    */
+   public String inquirerLog() {
+      StringBuilder log = new StringBuilder();
+      log.append("Inquirer: ").append(inquirer.getFirstName()).append(" ").append(inquirer.getLastName()).append("\n");
+      log.append("Missing person: ").append(missingPerson.getFirstName()).append(" ").append("\n");
+      log.append("Date of Inquiry: ").append(dateOfInquiry).append("\n");
+      log.append("Information: ").append(infoProvided).append("\n");
+      log.append("Last known location: ").append(lastKnownLocation.getName()).append("\n");
+      return log.toString();
    }
 }
