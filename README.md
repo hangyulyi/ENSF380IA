@@ -6,3 +6,4 @@ New features added from Group Project:
 - Grab DisasterVictim gender attribute from Gender.txt file
 - Add throws error argument for each class
 - Throw IOfile error for DisasterVictiem when trying to get Gender attribute from the file
+- update
