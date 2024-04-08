@@ -28,6 +28,14 @@ public class DisasterVictimTest {
    }
 
    @Test(expected = IllegalArgumentException.class)
+   public void testBothAgeAndDateOfBirthProvided() {
+      String first = "Bob";
+      int age = 10;
+      
+      DisasterVictim victim = new DisasterVictim(first, validDate, age, validDate);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
    public void testSetDateOfBirthWithInvalidFormat() {
       victimBirth.setDateOfBirth(invalidDate); // should cause exception
    }

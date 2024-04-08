@@ -9,7 +9,7 @@ package edu.ucalgary.oop;
 import java.util.*;
 import java.io.*;
 
-public class DisasterVictim extends Entity implements IDisasterVictim{
+public class DisasterVictim extends Entity {
    enum DietaryRestrictions {
       AVML,
       DBML,
@@ -27,7 +27,7 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
    private String dateOfBirth;
    private int approxAge;
    private String gender;
-   private List<String> genderOptions;
+   private static List<String> genderOptions;
    private String comments;
    private int ASSIGNED_SOCIAL_ID;
    private ArrayList<MedicalRecord> medicalRecords;
@@ -84,6 +84,19 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
       loadGenderOptions("GenderOptions.txt");
    }
 
+   /**
+    * Constructor for if both age and date of birth was provided
+    * @param firstName
+    * @param ENTRY_DATE
+    * @param age
+    * @param birth
+    * @throws IllegalArgumentException
+    */
+   public DisasterVictim(String firstName, String ENTRY_DATE, int age, String birth) throws IllegalArgumentException {
+      super(firstName);
+      throw new IllegalArgumentException("Only age or date of birth should be provided, not both");
+   }
+
    /* Setters */
    // Make sure date of birth is in correct format of YYYY-MM-DD
    public void setDateOfBirth(String dob) throws IllegalArgumentException {
@@ -138,7 +151,7 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
    public String getEntryDate() { return this.ENTRY_DATE; }
    public int getAssignedSocialID() { return this.ASSIGNED_SOCIAL_ID; }
    public String getGender() { return gender; }
-   public List<String> getGenderOptions() {
+   public static List<String> getGenderOptions() {
       return genderOptions;
    }
    public List<Supply> getPersonalBelongings() { return personalBelongings; }
@@ -214,7 +227,7 @@ public class DisasterVictim extends Entity implements IDisasterVictim{
     * This method will read a file and throw exception if not able to be read
     * @param filename
     */
-   public void loadGenderOptions(String filename) {
+   public static void loadGenderOptions(String filename) {
       genderOptions = new ArrayList<>();
       try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
          String line;
