@@ -135,7 +135,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
     * Load Gender Combo Box with options indicated in file
     */
    private void loadGenderOptions() {
-      List<String> genderOptions = DisasterVictim.getGenderOptions();
+      List<String> genderOptions = DisasterVictim.loadGenderOptions("edu/ucalgary/oop/GenderOptions.txt");
       for (String option : genderOptions) {
          genderComboBox.addItem(option);
       }
