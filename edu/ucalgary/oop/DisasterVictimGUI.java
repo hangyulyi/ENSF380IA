@@ -128,18 +128,18 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       this.add(inputPanel, BorderLayout.CENTER);
       this.add(submitPanel, BorderLayout.PAGE_END);
 
-      // loadGenderOptions();
+      loadGenderOptions();
    }
 
    /**
     * Load Gender Combo Box with options indicated in file
     */
-   // private void loadGenderOptions() {
-   //    List<String> genderOptions = DisasterVictim.getGenderOptions();
-   //    for (String option : genderOptions) {
-   //       genderComboBox.addItem(option);
-   //    }
-   // }
+   private void loadGenderOptions() {
+      List<String> genderOptions = DisasterVictim.getGenderOptions();
+      for (String option : genderOptions) {
+         genderComboBox.addItem(option);
+      }
+   }
 
    public void actionPerformed(ActionEvent e) {
       if (e.getSource() == submitButton) {

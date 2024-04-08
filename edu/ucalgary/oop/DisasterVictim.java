@@ -81,7 +81,7 @@ public class DisasterVictim extends Entity {
       this.ASSIGNED_SOCIAL_ID = counter;
       counter++;
 
-      loadGenderOptions("GenderOptions.txt");
+      loadGenderOptions("edu/ucalgary/oop/GenderOptions.txt");
    }
 
    /**
@@ -227,7 +227,7 @@ public class DisasterVictim extends Entity {
     * This method will read a file and throw exception if not able to be read
     * @param filename
     */
-   public static void loadGenderOptions(String filename) {
+   public static List<String> loadGenderOptions(String filename) {
       genderOptions = new ArrayList<>();
       try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
          String line;
@@ -239,5 +239,6 @@ public class DisasterVictim extends Entity {
       } catch (IOException e) {
          System.err.println("Error reading file: " + e.getMessage());
       }
+      return genderOptions;
    }
 }
