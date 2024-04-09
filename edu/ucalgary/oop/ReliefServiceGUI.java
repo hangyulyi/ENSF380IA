@@ -10,7 +10,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class ReliefServiceGUI extends JPanel implements ActionListener {
+public class ReliefServiceGUI extends JPanel {
    private CardLayout cardLayout;
    private JPanel cardPanel;
 
@@ -69,6 +69,6 @@ public class ReliefServiceGUI extends JPanel implements ActionListener {
    }
 
    private void searchPeople() {
-      
+
    }
 }
