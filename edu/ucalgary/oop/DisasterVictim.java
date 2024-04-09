@@ -58,7 +58,7 @@ public class DisasterVictim extends Entity {
       this.ASSIGNED_SOCIAL_ID = counter;
       counter++;
 
-      loadGenderOptions("GenderOptions.txt");
+      loadGenderOptions("edu/ucalgary/oop/GenderOptions.txt");
    }
 
    /**
@@ -233,7 +233,6 @@ public class DisasterVictim extends Entity {
          String line;
          while ((line = reader.readLine()) != null) {
             genderOptions.add(line.trim());
-            System.out.println("Added: " + line.trim());
          }
          
       } catch (IOException e) {

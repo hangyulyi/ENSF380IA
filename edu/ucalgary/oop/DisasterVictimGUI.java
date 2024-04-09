@@ -1,6 +1,6 @@
 /**
  * @author  Hangyul Yi
- * @version 1.3
+ * @version 1.4
  * @since   1.0
  */
 
@@ -23,7 +23,7 @@ import java.awt.Insets;
 import java.util.*;
 
 public class DisasterVictimGUI extends JFrame implements ActionListener, MouseListener {
-
+   
    private JLabel instructions;
    private JLabel fnLabel;
    private JLabel lnLabel;
@@ -32,6 +32,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
    private JLabel genderLabel;
    private JLabel dietLabel;
    private JLabel commentLabel;
+   private JCheckBox dietCheckBox;
 
    private JTextField fnInput;
    private JTextField lnInput;
@@ -134,6 +135,10 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       submitButton = new JButton("Add");
       submitButton.addActionListener(this);
 
+      dietCheckBox = new JCheckBox();
+      dietCheckBox.addActionListener(e -> dietComboBox.setEnabled(dietCheckBox.isSelected()));
+      
+      // GUI layout
       JPanel headerPanel = new JPanel(new BorderLayout());
       headerPanel.add(Box.createVerticalStrut(50), BorderLayout.NORTH);
 
@@ -163,6 +168,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       gbc.gridy++;
       inputPanel.add(genderLabel, gbc);
       gbc.gridy++;
+  
       inputPanel.add(dietLabel, gbc);
       gbc.gridy++;
       inputPanel.add(commentLabel, gbc);
@@ -177,10 +183,15 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       gbc.gridy++;
       inputPanel.add(ageOrDOBInput, gbc);
       gbc.gridy++;
+      
       inputPanel.add(genderComboBox, gbc);
       gbc.gridy++;
+      inputPanel.add(dietCheckBox, gbc);
+      gbc.gridx++;
+      dietComboBox.setEnabled(false);
       inputPanel.add(dietComboBox, gbc);
       gbc.gridy++;
+      gbc.gridx--;
       gbc.fill = GridBagConstraints.BOTH;
       inputPanel.add(new JScrollPane(commentInput), gbc);
 
@@ -200,9 +211,53 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       cardPanel.add(addVictimPage, "addVictimPage");
    }
 
+   /**
+    * Create ReliefServicePage by referring to ReliefServiceGUI.java
+    */
    private void createReliefServicePage() {
       ReliefServiceGUI reliefServiceGUI = new ReliefServiceGUI(this);
       cardPanel.add(reliefServiceGUI, "reliefServiceGUI");
+   }
+
+   /**
+    * Create a DisasterVictim with information input on the GUI.
+    */
+   private void createDisasterVictim() {
+      String first = fnInput.getText();
+      String last = lnInput.getText().isEmpty() ? null : lnInput.getText();
+      String entryDate = entryInput.getText();
+      String ageOrDOB = ageOrDOBInput.getText();
+      String gender = (String) genderComboBox.getSelectedItem();
+      String comment = commentInput.getText().isEmpty() ? null : commentInput.getText();
+
+      DietaryRestrictions diet = null;
+      if (dietCheckBox.isSelected()) {
+         diet = (DietaryRestrictions) dietComboBox.getSelectedItem();
+      }
+      
+      DisasterVictim victim;
+
+      // is age
+      if(isValidAge(ageOrDOB)) {
+         int age = Integer.parseInt(ageOrDOB);
+         victim = new DisasterVictim(first, entryDate, age);
+      }
+      else {
+         victim = new DisasterVictim(first, entryDate, ageOrDOB);
+      }
+
+      victim.setLastName(last);
+      victim.setGender(gender);
+      victim.setDietaryRestriction(diet);
+      victim.setComments(comment);
+      
+      System.out.println("Disaster Victim created:");
+      System.out.println("First Name: " + victim.getFirstName());
+      System.out.println("Last Name: " + victim.getLastName());
+      System.out.println("Entry Date: " + victim.getEntryDate());
+      System.out.println("Gender: " + victim.getGender());
+      System.out.println("Dietary Restrictions: " + (victim.getDietaryRestrictions() != null ? victim.getDietaryRestrictions().toString() : "None"));
+      System.out.println("Comment: " + victim.getComments());
    }
 
    /**
@@ -212,6 +267,20 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       List<String> genderOptions = DisasterVictim.loadGenderOptions("edu/ucalgary/oop/GenderOptions.txt");
       for (String option : genderOptions) {
          genderComboBox.addItem(option);
+      }
+   }
+
+   /**
+    * Used to determine if input is an age or date of birth by parsing as int.
+    * @param ageOrDOB
+    * @return
+    */
+   private boolean isValidAge(String ageOrDOB) {
+      try {
+         Integer.parseInt(ageOrDOB);
+         return true;
+      } catch (NumberFormatException e) {
+         return false;
       }
    }
 
@@ -229,6 +298,9 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       }
       else if (e.getActionCommand().equals("Relief Services")) {
          cardLayout.show(cardPanel, "reliefServiceGUI");
+      }
+      else if (e.getSource() == submitButton) {
+         createDisasterVictim();
       }
    }
    
