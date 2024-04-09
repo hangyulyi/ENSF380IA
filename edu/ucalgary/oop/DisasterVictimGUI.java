@@ -1,12 +1,14 @@
 /**
  * @author  Hangyul Yi
- * @version 1.2
+ * @version 1.3
  * @since   1.0
  */
 
 package edu.ucalgary.oop;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 import javax.swing.*;
 
@@ -16,6 +18,7 @@ import java.awt.event.*;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.*;
 
@@ -39,12 +42,68 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
    private JTextArea commentInput;
    private JButton submitButton;
 
+   private JPanel cardPanel;
+   private CardLayout cardLayout;
+
+
    // Database connection
 
 
    public DisasterVictimGUI(){
       setTitle("Disaster Victim");
       setSize(500, 550);
+
+      cardLayout = new CardLayout();
+      cardPanel = new JPanel(cardLayout);
+      add(cardPanel, BorderLayout.CENTER);
+
+      createHomePage();
+      createAddVictimPage();
+
+      showHomePage();
+   }
+
+   /**
+    * Initial Home Page
+    * User can add a new disaster victim or navigate to relief services
+    */
+   private void createHomePage(){
+      JPanel homePage = new JPanel();
+      homePage.setLayout(new BoxLayout(homePage, BoxLayout.Y_AXIS));
+      homePage.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+      homePage.add(Box.createVerticalStrut(50));
+
+      JLabel titleLabel = new JLabel("Disaster Victim Management System");
+      titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+      homePage.add(titleLabel);
+
+      homePage.add(Box.createVerticalStrut(20));
+
+      JPanel buttonsPanel = new JPanel();
+      buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+      JButton addVictimButton = new JButton("Add new Disaster Victim");
+      JButton reliefServicesButton = new JButton("Relief Services");
+
+      addVictimButton.addActionListener(this);
+      reliefServicesButton.addActionListener(this);
+      
+      buttonsPanel.add(addVictimButton);
+      buttonsPanel.add(reliefServicesButton);
+
+      homePage.add(buttonsPanel);
+
+      cardPanel.add(homePage, "homePage");
+   }
+
+   /**
+    * Add new Disaster Victim Page
+    */
+   private void createAddVictimPage() {
+      JPanel addVictimPage = new JPanel((new BorderLayout()));
+      addVictimPage.add(new JLabel("Add new Disaster Victim Page"));
+
+      cardPanel.add(addVictimPage, "addVictimPage");
 
       instructions = new JLabel("<html><div style='text-align: left;'>Please enter the Disaster Victim information.<br/>The following information is necessary: First name, Age/DOB, Entry Date.</div></html>");
       fnLabel = new JLabel("First name:");
@@ -72,8 +131,8 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       submitButton = new JButton("Add");
       submitButton.addActionListener(this);
 
-      JPanel headerPanel = new JPanel();
-      headerPanel.setLayout(new FlowLayout());
+      JPanel headerPanel = new JPanel(new BorderLayout());
+      headerPanel.add(Box.createVerticalStrut(50), BorderLayout.NORTH);
 
       JPanel inputPanel = new JPanel(new GridBagLayout());
       GridBagConstraints gbc = new GridBagConstraints();
@@ -82,12 +141,12 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       gbc.gridx = 0;
       gbc.gridy = 0;
       gbc.gridwidth = 2;
-      
 
       JPanel submitPanel = new JPanel();
       submitPanel.setLayout(new FlowLayout());
 
-      headerPanel.add(instructions);
+      instructions.setHorizontalAlignment(SwingConstants.LEFT);
+      headerPanel.add(instructions, BorderLayout.CENTER);
       gbc.gridwidth = 1;
 
       gbc.gridy++;
@@ -122,13 +181,20 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       gbc.fill = GridBagConstraints.BOTH;
       inputPanel.add(new JScrollPane(commentInput), gbc);
 
+      // go back button
+      JButton backButton = new JButton("Back");
+      backButton.addActionListener(e -> cardLayout.show(cardPanel, "homePage"));
+      submitPanel.add(backButton);
+
       submitPanel.add(submitButton);
 
-      this.add(headerPanel, BorderLayout.NORTH);
-      this.add(inputPanel, BorderLayout.CENTER);
-      this.add(submitPanel, BorderLayout.PAGE_END);
+      addVictimPage.add(headerPanel, BorderLayout.NORTH);
+      addVictimPage.add(inputPanel, BorderLayout.CENTER);
+      addVictimPage.add(submitPanel, BorderLayout.SOUTH);
 
       loadGenderOptions();
+
+      cardPanel.add(addVictimPage, "addVictimPage");
    }
 
    /**
@@ -141,24 +207,21 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       }
    }
 
-   public void actionPerformed(ActionEvent e) {
-      if (e.getSource() == submitButton) {
-         // Retrieve input from text fields
-         // String firstName = fnInput.getText();
-         // String entryDate = entryInput.getText();
-         // String ageOrDOB = ageOrDOBInput.getText();
-         // String gender = (String) genderComboBox.getSelectedItem();
-         // DietaryRestrictions dietaryRestriction = (DietaryRestrictions) dietComboBox.getSelectedItem(); // Get selected dietary restriction
+   private void showAddVictimPage() {
+      cardLayout.show(cardPanel, "addVictimPage");
+   }
 
-         
+   private void showHomePage() {
+      cardLayout.show(cardPanel, "homePage");
+   }
+
+   public void actionPerformed(ActionEvent e) {
+      if (e.getActionCommand().equals("Add new Disaster Victim")) {
+         showAddVictimPage();
       }
    }
-
-
    
-   public void mouseClicked(MouseEvent e) {
-      
-   }
+   public void mouseClicked(MouseEvent e) {}
    public void mouseEntered(MouseEvent event){}
    public void mouseExited(MouseEvent event){}
    public void mousePressed(MouseEvent event){}

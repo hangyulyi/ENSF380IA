@@ -19,7 +19,7 @@ public class DisasterVictimTest {
    @Before
    public void setUp() {
       victimAge = new DisasterVictim("John", "2024-03-13", 30);
-      victimAge.loadGenderOptions("GenderOptions.txt");
+      victimAge.loadGenderOptions("edu/ucalgary/oop/GenderOptions.txt");
       victimBirth = new DisasterVictim("Jane", "2024-03-13", "1999-01-19");
 
       suppliesToSet = new ArrayList<>();
@@ -69,7 +69,7 @@ public class DisasterVictimTest {
 
    @Test
    public void testLoadGenderOptions() {
-      victimAge.loadGenderOptions("GenderOptions.txt");
+      victimAge.loadGenderOptions("edu/ucalgary/oop/GenderOptions.txt");
       assertNotNull(victimAge.getGenderOptions());
       assertFalse(victimAge.getGenderOptions().isEmpty());
    }
