@@ -23,7 +23,9 @@ import java.awt.Insets;
 import java.util.*;
 
 public class DisasterVictimGUI extends JFrame implements ActionListener, MouseListener {
-   
+   private ArrayList<DisasterVictim> disasterVictims;
+   private JList<String> victimList;
+
    private JLabel instructions;
    private JLabel fnLabel;
    private JLabel lnLabel;
@@ -46,11 +48,9 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
    private JPanel cardPanel;
    private CardLayout cardLayout;
 
-
-   // Database connection
-
-
    public DisasterVictimGUI(){
+      disasterVictims = new ArrayList<>();
+      
       setTitle("Disaster Victim");
       setSize(500, 550);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,6 +61,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
 
       createHomePage();
       createAddVictimPage();
+      createEditVictimPage();
       createReliefServicePage();
 
       showHomePage();
@@ -85,15 +86,18 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       homePage.add(Box.createVerticalStrut(20));
 
       JPanel buttonsPanel = new JPanel();
-      buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+      buttonsPanel.setLayout(new GridLayout(2, 2));
       JButton addVictimButton = new JButton("Add new Disaster Victim");
       JButton reliefServicesButton = new JButton("Relief Services");
+      JButton editVictimButton = new JButton("Edit Disaster Victim information");
 
       addVictimButton.addActionListener(this);
       reliefServicesButton.addActionListener(this);
+      editVictimButton.addActionListener(this);
       
       buttonsPanel.add(addVictimButton);
       buttonsPanel.add(reliefServicesButton);
+      buttonsPanel.add(editVictimButton);
 
       homePage.add(buttonsPanel);
 
@@ -211,6 +215,42 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       cardPanel.add(addVictimPage, "addVictimPage");
    }
 
+   private void createEditVictimPage() {
+      JPanel editVictimPage = new JPanel((new BorderLayout()));
+      
+      DefaultListModel<String> listModel = new DefaultListModel<>();
+      for (DisasterVictim victim : disasterVictims) {
+         listModel.addElement(victim.getFirstName());
+      }
+
+      victimList = new JList<>(listModel);
+      victimList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      victimList.addListSelectionListener(e -> {
+         if (!e.getValueIsAdjusting()) {
+            int selectedIndex = victimList.getSelectedIndex();
+            if (selectedIndex != -1) {
+               DisasterVictim selectedVictim = disasterVictims.get(selectedIndex);
+               displayVictimInformation(selectedVictim);
+            }
+         }
+      });
+
+      JScrollPane scrollPane = new JScrollPane(victimList);
+
+      // go back button
+      JButton backButton = new JButton("Back");
+      backButton.addActionListener(e -> cardLayout.show(cardPanel, "homePage"));
+
+      editVictimPage.add(scrollPane, BorderLayout.CENTER);
+      editVictimPage.add(backButton, BorderLayout.SOUTH);
+
+      cardPanel.add(editVictimPage, "editVictimPage");
+   }
+
+   private void displayVictimInformation(DisasterVictim victim) {
+
+   }
+
    /**
     * Create ReliefServicePage by referring to ReliefServiceGUI.java
     */
@@ -221,6 +261,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
 
    /**
     * Create a DisasterVictim with information input on the GUI.
+    * Adds the DisasterVictim to a local list. Future good modification will be to implement a database for this.
     */
    private void createDisasterVictim() {
       String first = fnInput.getText();
@@ -250,14 +291,24 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       victim.setGender(gender);
       victim.setDietaryRestriction(diet);
       victim.setComments(comment);
+
+      disasterVictims.add(victim);
       
-      System.out.println("Disaster Victim created:");
-      System.out.println("First Name: " + victim.getFirstName());
-      System.out.println("Last Name: " + victim.getLastName());
-      System.out.println("Entry Date: " + victim.getEntryDate());
-      System.out.println("Gender: " + victim.getGender());
-      System.out.println("Dietary Restrictions: " + (victim.getDietaryRestrictions() != null ? victim.getDietaryRestrictions().toString() : "None"));
-      System.out.println("Comment: " + victim.getComments());
+      // Update the list model
+      DefaultListModel<String> listModel = new DefaultListModel<>();
+      for (DisasterVictim existingVictim : disasterVictims) {
+         listModel.addElement(existingVictim.getFirstName());
+      }
+
+      // Set the updated model to the JList
+      victimList.setModel(listModel);
+
+      // Notify the JList that elements were added
+      int lastIndex = listModel.size() - 1;
+      if (lastIndex >= 0) {
+         victimList.ensureIndexIsVisible(lastIndex);
+      }
+    
    }
 
    /**
@@ -284,12 +335,19 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       }
    }
 
+   /**
+    * Used to show Add Victim Page
+    */
    private void showAddVictimPage() {
       cardLayout.show(cardPanel, "addVictimPage");
    }
 
    public void showHomePage() {
       cardLayout.show(cardPanel, "homePage");
+   }
+
+   private void showEditVictimPage() {
+      cardLayout.show(cardPanel, "editVictimPage");
    }
 
    public void actionPerformed(ActionEvent e) {
@@ -299,8 +357,18 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       else if (e.getActionCommand().equals("Relief Services")) {
          cardLayout.show(cardPanel, "reliefServiceGUI");
       }
+      else if (e.getActionCommand().equals("Edit Disaster Victim information")) {
+         showEditVictimPage();
+      }
       else if (e.getSource() == submitButton) {
          createDisasterVictim();
+         fnInput.setText("");
+         lnInput.setText("");
+         entryInput.setText("");
+         ageOrDOBInput.setText("");
+         genderComboBox.setSelectedIndex(0);
+         dietCheckBox.setSelected(false);
+         commentInput.setText("");
       }
    }
    
