@@ -52,6 +52,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
    public DisasterVictimGUI(){
       setTitle("Disaster Victim");
       setSize(500, 550);
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
       cardLayout = new CardLayout();
       cardPanel = new JPanel(cardLayout);
@@ -59,8 +60,10 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
 
       createHomePage();
       createAddVictimPage();
+      createReliefServicePage();
 
       showHomePage();
+      setVisible(true);
    }
 
    /**
@@ -197,6 +200,11 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       cardPanel.add(addVictimPage, "addVictimPage");
    }
 
+   private void createReliefServicePage() {
+      ReliefServiceGUI reliefServiceGUI = new ReliefServiceGUI(this);
+      cardPanel.add(reliefServiceGUI, "reliefServiceGUI");
+   }
+
    /**
     * Load Gender Combo Box with options indicated in file
     */
@@ -211,13 +219,16 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       cardLayout.show(cardPanel, "addVictimPage");
    }
 
-   private void showHomePage() {
+   public void showHomePage() {
       cardLayout.show(cardPanel, "homePage");
    }
 
    public void actionPerformed(ActionEvent e) {
       if (e.getActionCommand().equals("Add new Disaster Victim")) {
          showAddVictimPage();
+      }
+      else if (e.getActionCommand().equals("Relief Services")) {
+         cardLayout.show(cardPanel, "reliefServiceGUI");
       }
    }
    
@@ -228,9 +239,6 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
    public void mouseReleased(MouseEvent event){}
 
    public static void main(String[] args) {
-      SwingUtilities.invokeLater(() -> {
-         DisasterVictimGUI gui = new DisasterVictimGUI();
-         gui.setVisible(true);
-      });
+      SwingUtilities.invokeLater(DisasterVictimGUI::new);
    }
 }
