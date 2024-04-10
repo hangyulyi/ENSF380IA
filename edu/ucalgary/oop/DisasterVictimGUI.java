@@ -57,7 +57,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       disasterVictims = new ArrayList<>();
       
       setTitle("Disaster Victim");
-      setSize(500, 700);
+      setSize(600, 700);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
       cardLayout = new CardLayout();
@@ -273,6 +273,8 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
     */
    private void createEditVictimPage() {
       JPanel editVictimPage = new JPanel(new BorderLayout());
+
+      JButton saveButton = new JButton("Save");
       
       DefaultListModel<String> listModel = new DefaultListModel<>();
       for (DisasterVictim victim : disasterVictims) {
@@ -286,11 +288,11 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
             int selectedIndex = victimList.getSelectedIndex();
             if (selectedIndex != -1) {
                   DisasterVictim selectedVictim = disasterVictims.get(selectedIndex);
+                  JPanel editInfoPanel = VictimInfoPanel();
 
-                  // // set existing victim's information in VictimInfoPanel fields
-                  // victimInfoPanel.setFnInput(selectedVictim.getFirstName());
-                  // victimInfoPanel.setLnInput(selectedVictim.getLastName());
-
+                  editVictimPage.add(editInfoPanel, BorderLayout.CENTER);
+                  populateVictimInfo(selectedVictim);
+                  saveButton.addActionListener(saveEvent -> updateVictimInformation(selectedVictim));
                   cardLayout.show(cardPanel, "editVictimInfoPage");
             }
          }
@@ -301,40 +303,96 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       JButton backButton = new JButton("Back");
       backButton.addActionListener(e -> cardLayout.show(cardPanel, "homePage"));
 
-      JButton editButton = new JButton("Edit");
-      // editButton.addActionListener(e -> updateVictimInformation());
-
       JPanel buttonPanel = new JPanel();
       buttonPanel.add(backButton);
-      buttonPanel.add(editButton);
+      buttonPanel.add(saveButton);
 
+      editVictimPage.add(scrollPane,BorderLayout.WEST);
       editVictimPage.add(buttonPanel, BorderLayout.SOUTH);
 
       cardPanel.add(editVictimPage, "editVictimPage");
    }
 
-   private void displayVictimInformation(DisasterVictim victim) {
-
-      JTextArea familyConnectionsTextArea = new JTextArea(5, 20);
-      familyConnectionsTextArea.setEditable(false);
-      JScrollPane familyConnectionsScrollPane = new JScrollPane(familyConnectionsTextArea);
-
-      JTextArea medicalRecordsTextArea = new JTextArea(5, 20);
-      medicalRecordsTextArea.setEditable(false);
-      JScrollPane medicalRecordsScrollPane = new JScrollPane(medicalRecordsTextArea);
-
-      Set<FamilyRelation> familyConnections = victim.getFamilyConnections();
-      StringBuilder familyConnectionsText = new StringBuilder();
-      for (FamilyRelation relation : familyConnections) {
-         familyConnectionsText.append(relation.toString()).append("\n");
+   /**
+    * Populate input fields with information of selected Disaster Victim.
+    * @param victim
+    */
+   private void populateVictimInfo(DisasterVictim victim) {
+      fnInput.setText(victim.getFirstName());
+      lnInput.setText(victim.getLastName());
+      entryInput.setText(victim.getEntryDate());
+      
+      if(victim.getDateOfBirth() != null) {
+         ageOrDOBInput.setText(victim.getDateOfBirth());
       }
-      familyConnectionsTextArea.setText(familyConnectionsText.toString());
+      else {
+         ageOrDOBInput.setText(String.valueOf(victim.getApproxAge()));
+      }
 
-      JPanel infoPanel = new JPanel(new GridLayout(2, 1));
-      infoPanel.add(familyConnectionsScrollPane);
-      infoPanel.add(medicalRecordsScrollPane);
+      genderComboBox.setSelectedItem(victim.getGender());
+      commentInput.setText(victim.getComments());
+      if(victim.getDietaryRestrictions() != null) {
+         dietCheckBox.setSelected(true);
+         dietComboBox.setSelectedItem(victim.getDietaryRestrictions());
+      }
+   }
 
-      cardPanel.add(infoPanel, "editVictimInfoPage");
+   private void updateVictimInformation(DisasterVictim victim) {
+      String first = fnInput.getText();
+      String last = lnInput.getText().isEmpty() ? null : lnInput.getText();
+      String entryDate = entryInput.getText();
+      String ageOrDOB = ageOrDOBInput.getText();
+      String gender = (String) genderComboBox.getSelectedItem();
+      String comment = commentInput.getText().isEmpty() ? null : commentInput.getText();
+      String medRecords = medicalRecordsTextArea.getText();
+
+
+      // checkbox indicates if user has dietary restrictions or not
+      DietaryRestrictions diet = null;
+      if (dietCheckBox.isSelected()) {
+         diet = (DietaryRestrictions) dietComboBox.getSelectedItem();
+      }
+      
+      System.out.println("First Name: " + first);
+      System.out.println("Last Name: " + last);
+      System.out.println("Entry Date: " + entryDate);
+      System.out.println("Age/DOB: " + ageOrDOB);
+      System.out.println("Gender: " + gender);
+      System.out.println("Comment: " + comment);
+      System.out.println("Diet: " + diet);
+
+      // is age
+      if(isValidAge(ageOrDOB)) {
+         int age = Integer.parseInt(ageOrDOB);
+         victim.setApproxAge(age);;
+      }
+      else {
+         victim.setDateOfBirth(ageOrDOB);
+      }
+
+      victim.setLastName(last);
+      victim.setGender(gender);
+      victim.setDietaryRestriction(diet);
+      victim.setComments(comment);
+      
+      if(!medRecords.isEmpty()) {
+         setMedicalRecordsFromInput(medRecords, victim);
+      }
+      
+      // Update the list model
+      DefaultListModel<String> listModel = new DefaultListModel<>();
+      for (DisasterVictim existingVictim : disasterVictims) {
+         listModel.addElement(existingVictim.getFirstName());
+      }
+
+      // Set the updated model to the JList
+      victimList.setModel(listModel);
+
+      // Notify the JList that elements were added
+      int lastIndex = listModel.size() - 1;
+      if (lastIndex >= 0) {
+         victimList.ensureIndexIsVisible(lastIndex);
+      }
    }
 
    /**
@@ -491,13 +549,32 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
          validateInput();
          if(validateInput()) {
             createDisasterVictim();
-         }
-         
+            resetFields();
+         }  
       }
-
       
    }
 
+   /**
+    * Used to reset input fields to blank.
+    */
+   public void resetFields() {
+      fnInput.setText("");
+      lnInput.setText("");
+      entryInput.setText("");
+      ageOrDOBInput.setText("");
+      dietCheckBox.setSelected(false);
+      commentInput.setText("");
+      medicalRecordsTextArea.setText("");
+      relativeInput.setText("");
+      relationshipInput.setText("");
+   }
+
+   /**
+    * Ensure all input values are valid.
+    * Make sure first name, entry date, and age/DOB are filled
+    * @return boolean value
+    */
    private boolean validateInput() {
       try {
          String first = fnInput.getText();

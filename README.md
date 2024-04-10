@@ -24,3 +24,7 @@ java -cp ".:lib/*:." edu.ucalgary.oop.DisasterVictimGUI
 ```
 
 This should bring up a GUI giving you the option to add/edit DisasterVictim and go to Relief Services.
+
+### Things to note when using the GUI:
+- As of right now, in order to edit a Disaster Victim's information, you need to go into the Edit panel, click the desired victim on the list shown on the left of the screen, back, and then enter the edit screen again.
+- Relief Services have not been implemented and are not able to be used.
