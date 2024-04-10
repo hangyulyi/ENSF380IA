@@ -115,8 +115,8 @@ public class DisasterVictim extends Entity {
       this.approxAge = approxAge;
    }
 
-   public void setMedicalRecords(MedicalRecord[] medicalRecords) {
-      this.medicalRecords.addAll(Arrays.asList(medicalRecords));
+   public void setMedicalRecords(ArrayList<MedicalRecord> medicalRecords) {
+      this.medicalRecords = medicalRecords;
    }
 
    public void setFamilyConnections(Map<DisasterVictim, Set<FamilyRelation>> familyConnections) {
@@ -151,6 +151,9 @@ public class DisasterVictim extends Entity {
    public String getEntryDate() { return this.ENTRY_DATE; }
    public int getAssignedSocialID() { return this.ASSIGNED_SOCIAL_ID; }
    public String getGender() { return gender; }
+   public ArrayList<MedicalRecord> getMedicalRecords() {
+      return medicalRecords;
+   }
    public static List<String> getGenderOptions() {
       return genderOptions;
    }

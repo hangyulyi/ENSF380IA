@@ -175,6 +175,7 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       gbc.gridx = 0;
       gbc.gridwidth = 2;
       inputPanel.add(addFamilyConnectionButton, gbc);
+      addFamilyConnectionButton.addActionListener(this);
 
       loadGenderOptions();
 
@@ -356,8 +357,14 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       String ageOrDOB = ageOrDOBInput.getText();
       String gender = (String) genderComboBox.getSelectedItem();
       String comment = commentInput.getText().isEmpty() ? null : commentInput.getText();
+      String medRecords = medicalRecordsTextArea.getText();
 
-      DietaryRestrictions diet = (DietaryRestrictions) dietComboBox.getSelectedItem();
+
+      // checkbox indicates if user has dietary restrictions or not
+      DietaryRestrictions diet = null;
+      if (dietCheckBox.isSelected()) {
+         diet = (DietaryRestrictions) dietComboBox.getSelectedItem();
+      }
       
       System.out.println("First Name: " + first);
       System.out.println("Last Name: " + last);
@@ -383,6 +390,10 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
       victim.setGender(gender);
       victim.setDietaryRestriction(diet);
       victim.setComments(comment);
+      
+      if(!medRecords.isEmpty()) {
+         setMedicalRecordsFromInput(medRecords, victim);
+      }
 
       disasterVictims.add(victim);
       
@@ -418,6 +429,36 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
    }
 
    /**
+    * Sets Medical Records if input for Disaster Victim
+    * @param inputText
+    * @param victim
+    */
+   private void setMedicalRecordsFromInput(String inputText, DisasterVictim victim) {
+      String[] recordsText = inputText.split("\\r?\\n");
+      ArrayList<MedicalRecord> medicalRecords = new ArrayList<>();
+
+      for (String recordText : recordsText) {
+         String[] parts = recordText.split(", ");
+         if (parts.length == 3) {
+            String locationString = parts[0].trim();
+            String treatmentDetails = parts[1].trim();
+            String dateOfTreatment = parts[2].trim();
+
+            try {
+               MedicalRecord record = new MedicalRecord(new Location(locationString, null), treatmentDetails, dateOfTreatment);
+               medicalRecords.add(record);
+            } catch (IllegalArgumentException e) {
+               System.err.println("Failed to create MedicalRecord: " + e.getMessage());
+            }
+         } else {
+            System.err.println("Invalid format for medical record: " + recordText);
+         }
+      }
+
+      victim.setMedicalRecords(medicalRecords);
+   }
+
+   /**
     * Used to show Add Victim Page
     */
    private void showAddVictimPage() {
@@ -447,9 +488,39 @@ public class DisasterVictimGUI extends JFrame implements ActionListener, MouseLi
          showEditVictimPage();
       }
       else if (e.getSource().equals(submitButton)) {
-         createDisasterVictim();
+         validateInput();
+         if(validateInput()) {
+            createDisasterVictim();
+         }
+         
       }
+
       
+   }
+
+   private boolean validateInput() {
+      try {
+         String first = fnInput.getText();
+         if (first.isEmpty()) {
+            throw new IllegalArgumentException("First name is required.");
+         }
+
+         String ageOrDOB = ageOrDOBInput.getText();
+         if (ageOrDOB.isEmpty()) {
+            throw new IllegalArgumentException("Age or Date of birth is required.");
+         }
+
+         String entryDate = entryInput.getText();
+         if (entryDate.isEmpty()) {
+            throw new IllegalArgumentException("Entry Date is required (YYYY-MM-DD).");
+         }
+
+         return true;
+      } catch (IllegalArgumentException e) {
+         JOptionPane.showMessageDialog(this, e.getMessage());
+      }
+
+      return false;
    }
    
    public void mouseClicked(MouseEvent e) {}
