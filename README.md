@@ -1,4 +1,4 @@
-# ENSF380 Individual Assignment
+# ENSF380 Object-Oriented Principles for Software Development Individual Assignment
 
 ## Requirements to run the program:
 All files should be in the correct file structure if not modified but in the case they are, files should be in the following structure:
